@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mimacom</groupId>
+    <artifactId>2019-06-14-mimacom-lunch-and-learn</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>2019-06-14-mimacom-lunch-and-learn</name>
+    <description>Demo project for Mimacom Lunch and Learn 2019-06-14</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>old-way/api-gateway</module>
+        <module>old-way/customer-service</module>
+        <module>old-way/order-service</module>
+
+        <module>new-way/new-customer-service</module>
+        <module>new-way/new-api-gateway</module>
+        <module>new-way/new-order-service</module>
+    </modules>
+
+</project>

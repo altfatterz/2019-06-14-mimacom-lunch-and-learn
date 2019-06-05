@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: new-customer-service
+
+server:
+  port: 8081
