@@ -16,9 +16,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static java.util.stream.Collectors.toList;
 
 @SpringBootApplication
 public class NewCustomerServiceApplication {
@@ -40,20 +44,18 @@ class CustomerRestController {
     @GetMapping("/customers/{customerId}")
     public Mono<Customer> getCustomer(@PathVariable String customerId) {
 
+        Customer customer = customerRepository.getCustomer(customerId);
+
         Flux<Order> orders = orderServiceClient.getOrder(customerId);
 
-        Flux<List<String>> ps = orders.map(order -> {
-            List<String> products = order.getItems().stream().map(item -> item.getProductName()).collect(Collectors.toList());
-            return products;
+        Flux<List<String>> productNamesPerOrder = orders.map(order -> order.getItems().stream().map(item -> item.getProductName()).collect(toList()));
+
+        Mono<List<String>> productNames = productNamesPerOrder.flatMap(strings -> Flux.fromIterable(strings)).collectList();
+
+        return productNames.map(products -> {
+            customer.setFavouriteProducts(new HashSet<>(products));
+            return customer;
         });
-
-
-
-        // all the product names
-
-        return Mono.just(new Customer("John", "Doe",
-                LocalDate.of(1983, 02, 10),
-                Arrays.asList("foo", "bar")));
     }
 }
 
@@ -64,19 +66,30 @@ class Customer {
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
-    private List<String> products;
+    private Set<String> favouriteProducts;
 
 }
 
 @Repository
 class CustomerRepository {
 
+    private static Map<String, Customer> customers = new ConcurrentHashMap<>();
+
+    public CustomerRepository() {
+        customers.put("1", Customer.builder()
+                .firstName("Walter")
+                .lastName("White")
+                .birthDate(LocalDate.of(1958, 10, 12))
+                .build());
+        customers.put("2", Customer.builder()
+                .firstName("Jesse")
+                .lastName("Pinkman")
+                .birthDate(LocalDate.of(1986, 9, 11))
+                .build());
+    }
+
     public Customer getCustomer(String customerId) {
-        return Customer.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .birthDate(LocalDate.of(1983, 2, 10))
-                .build();
+        return customers.get(customerId);
     }
 
 }

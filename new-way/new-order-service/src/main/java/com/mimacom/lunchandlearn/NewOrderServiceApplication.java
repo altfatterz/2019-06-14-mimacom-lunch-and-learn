@@ -35,7 +35,7 @@ class OrderRestController {
                 new Order(new BigDecimal(152.25),
                         Arrays.asList(
                                 new OrderItem("The Keyboard Waffle Iron", 3),
-                                new OrderItem("Paladone Pug Tape Measure", 2))));
+                                new OrderItem("Retro Pop-Up Hot Dog Toaster", 2))));
 
     }
 
