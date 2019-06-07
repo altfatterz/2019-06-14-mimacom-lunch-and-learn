@@ -1,11 +1,21 @@
 package com.mimacom.lunchandlearn;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.timelimiter.TimeLimiterConfig;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.circuitbreaker.commons.CircuitBreaker;
+import org.springframework.cloud.circuitbreaker.commons.CircuitBreakerFactory;
+import org.springframework.cloud.circuitbreaker.commons.Customizer;
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +42,15 @@ public class NewCustomerServiceApplication {
         SpringApplication.run(NewCustomerServiceApplication.class, args);
     }
 
+    @Bean
+    Customizer<Resilience4JCircuitBreakerFactory> defaultCustomizer() {
+        return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
+                .timeLimiterConfig(TimeLimiterConfig.custom()
+                        .timeoutDuration(Duration.ofSeconds(2))
+                        .build())
+                .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
+                .build());
+    }
 }
 
 
@@ -46,7 +66,7 @@ class CustomerRestController {
 
         Customer customer = customerRepository.getCustomer(customerId);
 
-        Flux<Order> orders = orderServiceClient.getOrder(customerId);
+        Flux<Order> orders = orderServiceClient.getOrders(customerId);
 
         Flux<List<String>> productNamesPerOrder = orders.map(order -> order.getItems().stream().map(item -> item.getProductName()).collect(toList()));
 
@@ -98,20 +118,48 @@ class CustomerRepository {
 class OrderServiceClient {
 
     private final WebClient.Builder webClientBuilder;
+    private final CircuitBreakerFactory circuitBreakerFactory;
+    private final Timer getOrdersTimer;
 
-    public OrderServiceClient(@Qualifier("loadBalancedWebClient") WebClient.Builder webClientBuilder) {
+    public OrderServiceClient(@Qualifier("loadBalancedWebClient") WebClient.Builder webClientBuilder,
+                              CircuitBreakerFactory circuitBreakerFactory,
+                              MeterRegistry meterRegistry) {
         this.webClientBuilder = webClientBuilder;
+        this.circuitBreakerFactory = circuitBreakerFactory;
+        this.getOrdersTimer = meterRegistry.timer("get-orders");
     }
 
-    public Flux<Order> getOrder(String customerId) {
-        return webClientBuilder.build().get()
-                .uri(uriBuilder -> uriBuilder
-                        .scheme("http")
-                        .host("new-order-service")
-                        .path("/orders")
-                        .queryParam("customerId", customerId)
-                        .build())
+    public Flux<Order> getOrders(String customerId) {
+        Flux<Order> orders = webClientBuilder.build().get().uri(uriBuilder -> uriBuilder
+                .scheme("http")
+                .host("new-order-service")
+                .path("/orders")
+                .queryParam("customerId", customerId)
+                .build())
                 .retrieve().bodyToFlux(Order.class);
+
+        return orders.transform(it -> {
+            CircuitBreaker cb = circuitBreakerFactory.create("get-orders");
+            return cb.run(() -> it);
+        });
+
+
+//        return circuitBreakerFactory.create("get-orders").run(
+//                () -> {
+//                    System.out.println(" !!! calling the order-service !!! ");
+//                    return webClientBuilder.build().get().uri(uriBuilder -> uriBuilder
+//                            .scheme("http")
+//                            .host("new-order-service")
+//                            .path("/orders")
+//                            .queryParam("customerId", customerId)
+//                            .build())
+//                            .retrieve().bodyToFlux(Order.class);
+//                },
+//                throwable -> {
+//                    System.out.println(" !!! I was here !!!!");
+//                    return Flux.empty();
+//                });
+
     }
 }
 
