@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 @LoadBalancerClient(name = "order-service")
-public class WebClientConfig {
+public class WebClientConfiguration {
 
     @Bean
     @LoadBalanced

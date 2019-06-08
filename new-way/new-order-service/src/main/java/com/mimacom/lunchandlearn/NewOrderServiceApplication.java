@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.Thread.*;
+
 @SpringBootApplication
 public class NewOrderServiceApplication {
 
@@ -26,6 +28,7 @@ class OrderRestController {
 
     @GetMapping("/orders")
     public List<Order> getOrders(@RequestParam String customerId) {
+        addDelay(customerId);
         return Arrays.asList(
                 new Order(new BigDecimal(52.25),
                         Arrays.asList(
@@ -37,6 +40,15 @@ class OrderRestController {
                                 new OrderItem("The Keyboard Waffle Iron", 3),
                                 new OrderItem("Retro Pop-Up Hot Dog Toaster", 2))));
 
+    }
+
+    private void addDelay(String customerId) {
+        if ("2".equals(customerId)) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+            }
+        }
     }
 
 }
