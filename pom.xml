@@ -16,6 +16,7 @@
         <module>old-way/order-service</module>
 
         <module>new-way/new-customer-service</module>
+        <module>new-way/new-customer-service-v2</module>
         <module>new-way/new-api-gateway</module>
         <module>new-way/new-order-service</module>
     </modules>

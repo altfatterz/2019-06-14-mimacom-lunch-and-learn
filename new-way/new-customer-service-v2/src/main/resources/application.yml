@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: new-customer-service-v2
+
+logging:
+  level:
+    io.github.resilience4j: debug
+
+server:
+  port: 8083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - info
+          - health
+          - metrics
+          - prometheus
+
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      timeoutInMillis: 2000
