@@ -7,7 +7,7 @@ logging:
     io.github.resilience4j: debug
 
 server:
-  port: 8083
+  port: 6060
 
 management:
   endpoints:
@@ -18,9 +18,3 @@ management:
           - health
           - metrics
           - prometheus
-
-
-resilience4j.circuitbreaker:
-  configs:
-    default:
-      timeoutInMillis: 2000

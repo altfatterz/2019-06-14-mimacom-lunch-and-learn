@@ -1,6 +1,29 @@
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web.exposure.include: '*'
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
+
 spring:
   application:
     name: new-api-gateway
 
-server:
-  port: 8080
+  cloud:
+    gateway:
+      routes:
+        - id: new-customer-service
+          uri: lb://new-customer-service
+          predicates:
+            - Path=/customers/**
+          filters:
+            - name: Retry
+              args:
+                retries: 3
+
+
+

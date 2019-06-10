@@ -3,4 +3,4 @@ spring:
     name: new-order-service
 
 server:
-  port: 8082
+  port: 7070
