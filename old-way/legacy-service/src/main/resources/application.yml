@@ -1,0 +1,7 @@
+server:
+  port: 6060
+
+spring:
+  application:
+    name: legacy-service
+

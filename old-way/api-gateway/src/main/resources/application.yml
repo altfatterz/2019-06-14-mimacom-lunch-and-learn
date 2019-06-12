@@ -5,7 +5,20 @@ spring:
 server:
   port: 8080
 
+
+management:
+  endpoints:
+    web.exposure.include: '*'
+
 # by default all services are registered
 # http :8080/order-service/orders\?customerId=1
 # http :8080/customer-service/customers/1
 
+# check routes via: http://localhost:8080/actuator/routes
+
+zuul:
+  ignored-services: 'legacy-service'
+  routes:
+    allowed:
+      serviceId: legacy-service
+      path: /legacy/exposed
