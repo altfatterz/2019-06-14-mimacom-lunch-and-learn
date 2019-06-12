@@ -9,6 +9,12 @@ logging:
   level:
     org.springframework.cloud: trace
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 # default hystrix timeout is 1000ms
 hystrix:
   command:

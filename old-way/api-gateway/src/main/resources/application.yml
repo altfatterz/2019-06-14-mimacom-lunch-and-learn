@@ -15,7 +15,6 @@ management:
 # http :8080/customer-service/customers/1
 
 # check routes via: http://localhost:8080/actuator/routes
-
 zuul:
   ignored-services: 'legacy-service'
   routes:
