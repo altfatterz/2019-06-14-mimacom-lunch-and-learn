@@ -3,4 +3,8 @@ spring:
     name: order-service
 
 server:
-  port: 9092
+  port: 7070
+
+logging:
+  level:
+    org.springframework.cloud: trace

@@ -3,4 +3,9 @@ spring:
     name: api-gateway
 
 server:
-  port: 9090
+  port: 8080
+
+# by default all services are registered
+# http :8080/order-service/orders\?customerId=1
+# http :8080/customer-service/customers/1
+
