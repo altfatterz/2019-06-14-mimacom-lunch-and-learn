@@ -30,6 +30,11 @@ spring:
                 name: x-response-foo
                 value: bar
 
+        - id: legacy-service
+          uri: lb://legacy-service
+          predicates:
+            - Path=/legacy/exposed
+
 
 
 

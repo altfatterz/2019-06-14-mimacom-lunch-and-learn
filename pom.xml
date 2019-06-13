@@ -14,7 +14,8 @@
         <module>old-way/api-gateway</module>
         <module>old-way/customer-service</module>
         <module>old-way/order-service</module>
-        <module>old-way/legacy-service</module>
+
+        <module>legacy-service</module>
 
         <module>new-way/new-customer-service</module>
         <module>new-way/new-customer-service-v2</module>
