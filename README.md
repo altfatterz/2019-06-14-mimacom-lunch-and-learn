@@ -1,9 +1,50 @@
 Spring Cloud Gateway
 
 
+Routes available at:
+
+```bash
+http://localhost:8080/actuator/gateway/routes
+```
+
+Exposed metrics: (`spring.cloud.gateway.metrics.enabled` is set to `true` by default)
+
+```bash
+http://localhost:8080/actuator/metrics/gateway.requests
+```
+
+These metrics are then available to be scraped from `/actuator/metrics/gateway.requests` and can be easily integated with 
+`Prometheus` to create a `Grafana` dashboard.
+
+##### Prometheus
+
+The `management.endpoint.prometheus.enabled` is set to `true` by default.
+You need to include `prometheus` to the `management.endpoints.web.exposure.include` 
+
+Then the your application will have the followin endpoint: `http://localhost:8080/actuator/prometheus`.
+This will be scraped by [Prometheus](https://prometheus.io/) to get the information from your application. 
+
+##### Grafana
+
+Credentials: `admin`/`password`
 
 
-`RequestRateLimiter` feature
+Start `Grafana` and `Prometheus` together with `docker-compose` from the `new-way` folder.
+
+```bash
+$ docker-compose up
+```
+
+Verify that the targets are visible to `Prometheus` at `http://localhost:9090/targets`
+
+Import this [JVM Micrometer Dashboard](https://grafana.com/dashboards/4701) into Grafana.
+
+
+
+
+
+
+##### `RequestRateLimiter` feature of Spring Cloud Gateway 
 
 Start Redis
 

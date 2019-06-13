@@ -18,7 +18,7 @@ public class RouteConfigurations {
     @Bean
     RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("order_service_route",
+                .route("order-service-route",
                         route -> route.path("/orders")
                                 .and()
                                 .method(HttpMethod.GET)

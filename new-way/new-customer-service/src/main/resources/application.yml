@@ -8,7 +8,7 @@ logging:
     io.github.resilience4j: debug
 
 server:
-  port: 9090
+  port: 8085
 
 management:
   endpoints:
