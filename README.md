@@ -1,5 +1,21 @@
-Spring Cloud Gateway
+# old-Way
 
+`api-gateway (Zuul)` --> `customer-service` -- `(Hystrix / RibbonClient )` --> `order-service` 
+
+`hystrix-dashboard`
+
+`turbine`
+
+# new-way
+
+`api-gateway (spring cloud gateway)` --> `customer-service` -- (`Spring Cloud CircuitBreaker`/`Resilience4j` / `Spring Cloud LoadBlancer`) -->
+`order-service`
+
+`prometheus`
+`grafana`
+
+
+### Spring Cloud Gateway
 
 Routes available at:
 
@@ -37,10 +53,14 @@ $ docker-compose up
 
 Verify that the targets are visible to `Prometheus` at `http://localhost:9090/targets`
 
-Import this [JVM Micrometer Dashboard](https://grafana.com/dashboards/4701) into Grafana.
+![prometheus_targets.png](images/prometheus_targets.png)
 
+You can create your own dashboard, but you can also import already created dashboards like these:
 
-
+[https://grafana.com/dashboards/4701](https://grafana.com/dashboards/4701)
+[https://grafana.com/dashboards/5373](https://grafana.com/dashboards/5373)
+[Spring Cloud Gateway]
+(https://github.com/spring-cloud/spring-cloud-gateway/blob/master/docs/src/main/asciidoc/gateway-grafana-dashboard.json)
 
 
 
