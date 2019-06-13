@@ -12,8 +12,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.Thread.*;
-
 @SpringBootApplication
 public class NewOrderServiceApplication {
 

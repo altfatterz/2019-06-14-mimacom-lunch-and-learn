@@ -5,14 +5,11 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.server.ServerWebExchange;
-
-import java.util.function.Predicate;
 
 
 /**
  * Routes: http://localhost:8080/actuator/gateway/routes
- *
+ * <p>
  * More details here: https://cloud.spring.io/spring-cloud-gateway/multi/multi__actuator_api.html
  */
 @Configuration
