@@ -21,14 +21,16 @@ spring:
           predicates:
             - Path=/customers/**
           filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@userKeyResolver}'
+                redis-rate-limiter.replenishRate: 2
+                redis-rate-limiter.burstCapacity: 2
             - name: Retry
               args:
                 retries: 3
                 statuses: SERVICE_UNAVAILABLE
-            - name: AddResponseHeader
-              args:
-                name: x-response-foo
-                value: bar
+            - AddResponseHeader=X-Some-Header, foo
 
         - id: legacy-service
           uri: lb://legacy-service
