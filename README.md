@@ -6,6 +6,18 @@
 
 `turbine`
 
+Generate traffic with: 
+
+In `Hystrix Dashboard` configure the following url:
+
+```bash
+http://localhost:9090/actuator/hystrix.stream
+```
+
+```bash
+$ ab -c 5 -n 5000 http://localhost:8080/customer-service/customers/1
+```
+
 # new-way
 
 `api-gateway (spring cloud gateway)` --> `customer-service` -- (`Spring Cloud CircuitBreaker`/`Resilience4j` / `Spring Cloud LoadBlancer`) -->
@@ -13,6 +25,12 @@
 
 `prometheus`
 `grafana`
+
+Generate traffic with: 
+
+```bash
+$ ab -c 5 -n 5000 http://localhost:8080/customers/1
+```
 
 
 ### Spring Cloud Gateway
